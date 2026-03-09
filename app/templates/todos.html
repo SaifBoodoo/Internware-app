@@ -1,0 +1,32 @@
+{% extends "authenticated-base.html" %}
+
+{% block subpage_content %}
+
+<h3 class=""mb-4">My Todos</h3>
+
+{% if todos %}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Todo task</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        {% for todo in todos %}
+        <tr>
+            <td>{{todo.id}}</td>
+            <td>{{todo.title}}</td>
+        </tr>
+        {% end for %}
+    </tbody>
+</table>
+
+{% else %}
+<p>No Todos found.</p>
+
+{% endif %}
+
+{% endblock %}

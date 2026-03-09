@@ -79,9 +79,13 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link d-flex align-items-center {{ 'active' if request.path == '/users' }}" href="/users">
+                <!-- <a class="nav-link d-flex align-items-center {{ 'active' if request.path == '/users' }}" href="/users">
                     <span class="material-icons me-2">people</span>
                     Users
+                </a> -->
+                <a class="nav-link d-flex align-items-center {{ 'active' if request.path == '/todos' }}" href="/todos">
+                    <span class="material-icons me-2">checklist</span>
+                    Todos
                 </a>
             </li>
             

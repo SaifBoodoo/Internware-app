@@ -24,3 +24,19 @@ async def app(
             "user": user
         }
     )
+
+@app_router.get("/todos", response_class=HTMLResponse)
+async def get_todos(
+    request: Request,
+    user: AuthDep, #get currently logged in user
+    db:SessionDep
+):
+    todos = db.exec(select(Todo).where(Todo).user_id == user.id).all()
+    return templates.TemplateResponse(
+        request=request,
+        name="todos.html",
+        context={
+            "user":user,
+            "todos":todos
+        }
+    )
