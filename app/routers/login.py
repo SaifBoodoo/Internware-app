@@ -1,3 +1,4 @@
+from app.dependencies.auth import IsUserLoggedIn
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi import Request, status, Form
 from app.dependencies import SessionDep
@@ -9,7 +10,11 @@ from app.config import get_settings
 
 # View route responsible for UI
 @router.get("/login", response_class=HTMLResponse)
-async def login_view(request: Request):
+async def login_view(request: Request, user_logged_in: IsUserLoggedIn):
+    # If already logged in, send them to index to be redirected to their dashboard
+    if user_logged_in:
+        return RedirectResponse(url=request.url_for("index_view"), status_code=status.HTTP_303_SEE_OTHER)
+    
     return templates.TemplateResponse(
         request=request, 
         name="login.html",
