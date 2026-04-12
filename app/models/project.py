@@ -14,8 +14,10 @@ class ProjectBase(SQLModel):
     duration: int = 12  # weeks
     location: str = ""
     start_date: Optional[str] = None
-    posted_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
- 
+    posted_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc)
+    )
+
 class Project(ProjectBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     company_id: int = Field(foreign_key="companyprofile.id")
