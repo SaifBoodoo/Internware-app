@@ -8,7 +8,7 @@ from app.repositories.student import StudentRepository
 from app.repositories.company import CompanyRepository
 from app.utilities.flash import flash
 from . import router, templates
-
+ 
 # View route: Loads the registration page
 @router.get("/register", response_class=HTMLResponse)
 async def register_view(request: Request, user_logged_in: IsUserLoggedIn):
@@ -20,7 +20,7 @@ async def register_view(request: Request, user_logged_in: IsUserLoggedIn):
         request=request, 
         name="register.html",
     )
-
+ 
 # Action route: Performs the registration and profile creation
 @router.post('/register', response_class=HTMLResponse)
 async def register_action(
@@ -46,13 +46,13 @@ async def register_action(
     
     try:
         # 1. Create the base User via the AuthService
-        # Note: Ensure your AuthService.register_user accepts the 'role' parameter
         user = auth_service.register_user(username, email, password, role=role)
         
         # 2. Create the associated profile based on the role
         if role == "student":
             student_repo = StudentRepository(db)
-            student_repo.create_profile(
+            # FIX: Changed from create_profile to create
+            student_repo.create(
                 user_id=user.id,
                 name=name or username,
                 major=major or "",
@@ -62,17 +62,20 @@ async def register_action(
             )
         elif role == "company":
             company_repo = CompanyRepository(db)
-            company_repo.create_profile(
+            # FIX: Changed from create_profile to create
+            company_repo.create(
                 user_id=user.id,
                 company_name=company_name or username,
                 industry=industry or "",
                 location=location or ""
             )
-
+ 
         flash(request, "Registration completed! Please sign in.", "success")
         return RedirectResponse(url=request.url_for("login_view"), status_code=status.HTTP_303_SEE_OTHER)
-
+ 
     except Exception as e:
-        # Log the error if necessary: print(f"Registration error: {e}")
+        # Log the error if necessary
+        import logging
+        logging.error(f"Registration error: {e}")
         flash(request, "Registration failed. Username or email may already be taken.", "danger")
         return RedirectResponse(url=request.url_for("register_view"), status_code=status.HTTP_303_SEE_OTHER)

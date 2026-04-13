@@ -8,7 +8,7 @@ from app.repositories.application import ApplicationRepository
 from app.repositories.student import StudentRepository
 from app.utilities.flash import flash
 from . import router, templates
-
+ 
 @router.get("/company", response_class=HTMLResponse)
 async def company_home_view(
     request: Request,
@@ -24,7 +24,7 @@ async def company_home_view(
     
     if not company_profile:
         flash(request, "Please complete your profile", "warning")
-        return RedirectResponse(url=request.url_for("company_profile_view"), status_code=status.HTTP_303_SEE_OTHER)
+        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
     
     # Get stats using standardized repository methods
     projects = project_repo.get_by_company(company_profile.id)
@@ -47,7 +47,7 @@ async def company_home_view(
             "shortlisted_count": shortlisted
         }
     )
-
+ 
 @router.get("/company/projects", response_class=HTMLResponse)
 async def my_projects(
     request: Request,
@@ -62,7 +62,7 @@ async def my_projects(
     company_profile = company_repo.get_by_user_id(user.id)
     if not company_profile:
         flash(request, "Please complete your profile", "warning")
-        return RedirectResponse(url=request.url_for("company_profile_view"), status_code=status.HTTP_303_SEE_OTHER)
+        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
     
     projects = project_repo.get_by_company(company_profile.id)
     
@@ -83,7 +83,7 @@ async def my_projects(
             "projects": projects_with_counts
         }
     )
-
+ 
 @router.get("/company/projects/create", response_class=HTMLResponse)
 async def create_project_view(
     request: Request,
@@ -102,7 +102,7 @@ async def create_project_view(
             "company": company_profile
         }
     )
-
+ 
 @router.post("/company/projects/create")
 async def create_project_action(
     request: Request,
@@ -123,7 +123,7 @@ async def create_project_action(
     company_profile = company_repo.get_by_user_id(user.id)
     if not company_profile:
         flash(request, "Please complete your profile first", "warning")
-        return RedirectResponse(url=request.url_for("company_profile_view"), status_code=status.HTTP_303_SEE_OTHER)
+        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
     
     project_repo.create(
         company_id=company_profile.id,
@@ -138,7 +138,7 @@ async def create_project_action(
     
     flash(request, "Project created successfully!", "success")
     return RedirectResponse(url=request.url_for("my_projects"), status_code=status.HTTP_303_SEE_OTHER)
-
+ 
 @router.get("/company/projects/{project_id}/applicants", response_class=HTMLResponse)
 async def view_applicants(
     request: Request,
@@ -156,9 +156,18 @@ async def view_applicants(
     project = project_repo.get_by_id(project_id)
     company_profile = company_repo.get_by_user_id(user.id)
     
+    # FIX: Check company_profile exists before accessing .id
+    if not company_profile:
+        flash(request, "Company profile not found", "danger")
+        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+    
     # Validation: Existence and Ownership
-    if not project or project.company_id != company_profile.id:
-        flash(request, "Project not found or unauthorized", "danger")
+    if not project:
+        flash(request, "Project not found", "danger")
+        return RedirectResponse(url=request.url_for("my_projects"), status_code=status.HTTP_303_SEE_OTHER)
+    
+    if project.company_id != company_profile.id:
+        flash(request, "Unauthorized access", "danger")
         return RedirectResponse(url=request.url_for("my_projects"), status_code=status.HTTP_303_SEE_OTHER)
     
     all_apps = app_repo.get_by_project(project_id)
@@ -166,9 +175,12 @@ async def view_applicants(
     # Separate shortlisted for the top section, filter others for the main list
     shortlisted_with_students = []
     filtered_with_students = []
-
+ 
     for app in all_apps:
         student = student_repo.get_by_id(app.student_id)
+        if not student:
+            continue
+            
         data = {"application": app, "student": student}
         
         if app.status == "shortlisted":
@@ -179,7 +191,7 @@ async def view_applicants(
             filtered_with_students.append(data)
         elif filter == "shortlisted" and app.status == "shortlisted":
             filtered_with_students.append(data)
-
+ 
     return templates.TemplateResponse(
         request=request,
         name="company/applicants.html",
@@ -191,7 +203,7 @@ async def view_applicants(
             "filter": filter
         }
     )
-
+ 
 @router.post("/company/projects/{project_id}/shortlist/{student_id}")
 async def toggle_shortlist(
     request: Request,
@@ -208,6 +220,11 @@ async def toggle_shortlist(
     
     project = project_repo.get_by_id(project_id)
     company_profile = company_repo.get_by_user_id(user.id)
+    
+    # FIX: Check company_profile exists
+    if not company_profile:
+        flash(request, "Company profile not found", "danger")
+        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
     
     if not project or project.company_id != company_profile.id:
         flash(request, "Unauthorized action", "danger")
