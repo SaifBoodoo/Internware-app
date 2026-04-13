@@ -13,7 +13,7 @@ class UserBase(SQLModel,):
 
 class User(UserBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    password_hash: str
+    password: str
 
     student_profile: Optional["StudentProfile"] = Relationship(back_populates="user")
     company_profile: Optional["CompanyProfile"] = Relationship(back_populates="user")

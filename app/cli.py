@@ -17,7 +17,7 @@ def initialize():
         admin_auth = User(
             username='admin', 
             email='admin@internware.com', 
-            password_hash=encrypt_password('adminpass'), 
+            password=encrypt_password('adminpass'), 
             role='admin'
         )
         db.add(admin_auth)
@@ -26,7 +26,7 @@ def initialize():
         student_user = User(
             username='bob', 
             email='bob@university.edu', 
-            password_hash=encrypt_password('bobpass'), 
+            password=encrypt_password('bobpass'), 
             role='student'
         )
         db.add(student_user)
@@ -48,7 +48,7 @@ def initialize():
         company_user = User(
             username='techcorp', 
             email='hr@techcorp.com', 
-            password_hash=encrypt_password('companypass'), 
+            password=encrypt_password('companypass'), 
             role='company'
         )
         db.add(company_user)
