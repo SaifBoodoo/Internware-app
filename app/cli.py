@@ -2,7 +2,7 @@ import typer
 from sqlmodel import select
 from app.database import create_db_and_tables, get_cli_session, drop_all
 from app.models import *
-from app.auth import encrypt_password
+from app.dependencies.auth import encrypt_password
 
 cli = typer.Typer()
 
@@ -17,7 +17,7 @@ def initialize():
         admin_auth = User(
             username='admin', 
             email='admin@internware.com', 
-            password=encrypt_password('adminpass'), 
+            password_hash=encrypt_password('adminpass'), 
             role='admin'
         )
         db.add(admin_auth)
@@ -26,7 +26,7 @@ def initialize():
         student_user = User(
             username='bob', 
             email='bob@university.edu', 
-            password=encrypt_password('bobpass'), 
+            password_hash=encrypt_password('bobpass'), 
             role='student'
         )
         db.add(student_user)
@@ -36,7 +36,7 @@ def initialize():
         # Link Student Profile
         student_profile = StudentProfile(
             user_id=student_user.id,
-            name="John Doe",
+            name="bob smith",
             major="Computer Science",
             gpa=3.85,
             graduation_year=2027,
@@ -48,7 +48,7 @@ def initialize():
         company_user = User(
             username='techcorp', 
             email='hr@techcorp.com', 
-            password=encrypt_password('companypass'), 
+            password_hash=encrypt_password('companypass'), 
             role='company'
         )
         db.add(company_user)
@@ -81,7 +81,7 @@ def initialize():
 
         print("--- Seed Data Created ---")
         print("Admin: admin / adminpass")
-        print("Student: jdoe / studentpass")
+        print("Student: bob / bobpass")
         print("Company: techcorp / companypass")
 
 @cli.command()
