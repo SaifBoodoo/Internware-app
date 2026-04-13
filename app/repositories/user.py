@@ -21,7 +21,7 @@ class UserRepository:
             user_db = User(
                 username=username,
                 email=email,
-                password_hash=password_hash,
+                password=password_hash,
                 role=role
             )
             
@@ -40,7 +40,7 @@ class UserRepository:
         if not user:
             return None
         
-        if not verify_password(password, user.password_hash):
+        if not verify_password(password, user.password):
             return None
             
         return user
