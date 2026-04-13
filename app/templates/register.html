@@ -1,188 +1,183 @@
 {% extends "base.html" %}
 {% block title %}Register - Internware{% endblock %}
-
+ 
 {% block internal_css %}
 <style>
     body {
-        background-color: #f8f9fa;
+        min-height: 100vh;
     }
-
-    .login-container {
+ 
+    .register-container {
         min-height: 100vh;
         padding: 2rem 0;
     }
-
-    .login-card {
+ 
+    .register-card {
         border: none;
         border-radius: 1rem;
         overflow: hidden;
+        max-width: 600px;
     }
-
-    .login-image {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+ 
+    .register-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        padding: 3rem;
+        padding: 2rem;
+        text-align: center;
     }
-
+ 
     .form-section {
-        padding: 2.5rem;
-        max-height: 90vh;
-        overflow-y: auto;
+        padding: 2rem;
     }
-
+ 
     .role-buttons {
         display: flex;
         gap: 1rem;
         margin-bottom: 1.5rem;
     }
-
+ 
     .role-btn {
         flex: 1;
-        padding: 0.75rem;
+        padding: 1rem;
         border: 2px solid #dee2e6;
         background: white;
         border-radius: 0.5rem;
         cursor: pointer;
         transition: all 0.3s;
-        text-align: center;
     }
-
+ 
     .role-btn.active {
         border-color: #667eea;
         background: #f0f4ff;
-        color: #667eea;
     }
-
+ 
+    .role-btn:hover {
+        border-color: #667eea;
+    }
+ 
     .conditional-fields {
         display: none;
     }
-
+ 
     .conditional-fields.active {
         display: block;
-        animation: fadeIn 0.4s;
     }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
+ 
     .btn-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
         border-radius: 0.5rem;
     }
-
+ 
     .form-control {
         border-radius: 0.5rem;
     }
 </style>
 {% endblock %}
-
+ 
 {% block content %}
-<div class="container login-container d-flex align-items-center justify-content-center">
-    <div class="card shadow-lg login-card col-lg-11 col-xl-10">
-        <div class="row g-0">
-            <div class="col-lg-5 d-none d-lg-flex login-image">
+<div class="container register-container d-flex align-items-center justify-content-center">
+    <div class="card shadow-lg register-card w-100">
+        <div class="register-header">
+            <h2 class="fw-bold mb-2">Create Account</h2>
+            <p class="mb-0">Join Internware</p>
+        </div>
+ 
+        <div class="form-section">
+            <form id="registerForm" method="POST">
+                <!-- Role Selection -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">I am a:</label>
+                    <div class="role-buttons">
+                        <div class="role-btn active" onclick="selectRole('student')">
+                            <i class="bi bi-person-fill"></i>
+                            <div class="fw-bold">Student</div>
+                        </div>
+                        <div class="role-btn" onclick="selectRole('company')">
+                            <i class="bi bi-building"></i>
+                            <div class="fw-bold">Company</div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="role" id="role" value="student" required>
+                </div>
+ 
+                <!-- Common Fields -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+ 
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+ 
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+ 
+                <!-- Student Fields -->
+                <div id="studentFields" class="conditional-fields active">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="major" class="form-label">Major</label>
+                        <input type="text" class="form-control" id="major" name="major" placeholder="e.g., Computer Science">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="gpa" class="form-label">GPA</label>
+                            <input type="number" step="0.01" class="form-control" id="gpa" name="gpa" placeholder="3.8">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="graduation_year" class="form-label">Graduation Year</label>
+                            <input type="number" class="form-control" id="graduation_year" name="graduation_year" placeholder="2027">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="skills" class="form-label">Skills</label>
+                        <input type="text" class="form-control" id="skills" name="skills" placeholder="Python, React, SQL">
+                    </div>
+                </div>
+ 
+                <!-- Company Fields -->
+                <div id="companyFields" class="conditional-fields">
+                    <div class="mb-3">
+                        <label for="company_name" class="form-label">Company Name</label>
+                        <input type="text" class="form-control" id="company_name" name="company_name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="industry" class="form-label">Industry</label>
+                        <input type="text" class="form-control" id="industry" name="industry" placeholder="e.g., Technology">
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="location" placeholder="e.g., San Francisco, CA">
+                    </div>
+                </div>
+ 
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        Register
+                    </button>
+                </div>
+ 
                 <div class="text-center">
-                    <i class="bi bi-rocket-takeoff-fill" style="font-size: 4rem;"></i>
-                    <h2 class="mt-4 fw-bold">Join Internware</h2>
-                    <p class="lead">Bridge the gap between education and industry.</p>
+                    <span>Already registered? </span>
+                    <a href="/login">Login →</a>
                 </div>
-            </div>
-
-            <div class="col-lg-7 bg-white">
-                <div class="form-section">
-                    <h3 class="fw-bold mb-4">Create Account</h3>
-
-                    <form id="signUpForm" method="POST">
-                        <div class="mb-4">
-                            <label class="form-label fw-bold text-muted small text-uppercase">I am a:</label>
-                            <div class="role-buttons">
-                                <div class="role-btn active" onclick="selectRole('student')">
-                                    <i class="bi bi-person-fill"></i>
-                                    <div class="fw-bold">Student</div>
-                                </div>
-                                <div class="role-btn" onclick="selectRole('company')">
-                                    <i class="bi bi-building-fill"></i>
-                                    <div class="fw-bold">Company</div>
-                                </div>
-                            </div>
-                            <input type="hidden" name="role" id="role" value="student">
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="username" name="username" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-
-                        <hr class="my-4 text-muted">
-
-                        <div id="studentFields" class="conditional-fields active">
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Full Name</label>
-                                <input type="text" class="form-control" id="name" name="name">
-                            </div>
-                            <div class="mb-3">
-                                <label for="major" class="form-label">Major</label>
-                                <input type="text" class="form-control" id="major" name="major" placeholder="e.g. Computer Science">
-                            </div>
-                            <div class="row">
-                                <div class="col-6 mb-3">
-                                    <label for="gpa" class="form-label">GPA</label>
-                                    <input type="number" step="0.01" class="form-control" id="gpa" name="gpa">
-                                </div>
-                                <div class="col-6 mb-3">
-                                    <label for="graduation_year" class="form-label">Graduation</label>
-                                    <input type="number" class="form-control" id="graduation_year" name="graduation_year" placeholder="2027">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="companyFields" class="conditional-fields">
-                            <div class="mb-3">
-                                <label for="company_name" class="form-label">Company Name</label>
-                                <input type="text" class="form-control" id="company_name" name="company_name">
-                            </div>
-                            <div class="mb-3">
-                                <label for="industry" class="form-label">Industry</label>
-                                <input type="text" class="form-control" id="industry" name="industry" placeholder="e.g. Fintech">
-                            </div>
-                            <div class="mb-3">
-                                <label for="location" class="form-label">Location</label>
-                                <input type="text" class="form-control" id="location" name="location">
-                            </div>
-                        </div>
-
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg">Register</button>
-                            <a class="btn btn-outline-secondary" href="{{url_for('login_view')}}">Already have an account? Login</a>
-                        </div>
-
-                        {% for message in get_flashed_messages(request) %}
-                        <div class="alert alert-{{ message.type }} mt-3" role="alert">{{ message.message }}</div>
-                        {% endfor %}
-                    </form>
-                </div>
-            </div>
+ 
+                {% for message in get_flashed_messages(request) %}
+                <div class="alert alert-{{ message.type }} mt-3" role="alert">{{ message.message }}</div>
+                {% endfor %}
+            </form>
         </div>
     </div>
 </div>
-
+ 
 <script>
 function selectRole(role) {
     // Update hidden input
@@ -192,7 +187,6 @@ function selectRole(role) {
     document.querySelectorAll('.role-btn').forEach(btn => {
         btn.classList.remove('active');
     });
-    // Use event.currentTarget for the specific clicked div
     event.currentTarget.classList.add('active');
     
     // Show/hide conditional fields
