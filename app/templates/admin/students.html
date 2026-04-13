@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}All Students - Admin - Internware{% endblock %}
+ 
+{% block internal_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #b56576 0%, #e56b6f 100%);
+        min-height: 100vh;
+    }
+ 
+    .students-container {
+        padding: 2rem;
+        min-height: 100vh;
+    }
+ 
+    .navbar-custom {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 1rem;
+        padding: 1rem 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+ 
+    .brand-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #b56576 0%, #e56b6f 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+ 
+    .header-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+ 
+    .student-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+    }
+ 
+    .student-card:hover {
+        transform: translateY(-3px);
+    }
+ 
+    .student-name {
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+    }
+ 
+    .student-meta {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+ 
+    .application-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #b56576 0%, #e56b6f 100%);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+ 
+{% block content %}
+<div class="students-container">
+    <!-- Navigation -->
+    <nav class="navbar-custom d-flex justify-content-between align-items-center">
+        <div class="brand-name">InternHub Admin</div>
+        <div class="d-flex align-items-center gap-3">
+            <a href="{{ url_for('admin_home_view') }}" class="btn btn-link text-decoration-none">Dashboard</a>
+            <a href="{{ url_for('all_projects') }}" class="btn btn-link text-decoration-none">All Projects</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm">Logout</a>
+        </div>
+    </nav>
+ 
+    <!-- Header -->
+    <div class="header-card">
+        <h3 class="fw-bold mb-0">All Students ({{ students|length }})</h3>
+    </div>
+ 
+    <!-- Students List -->
+    {% if students %}
+        {% for item in students %}
+        <div class="student-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div class="flex-grow-1">
+                    <div class="student-name">{{ item.student.name }}</div>
+                    <div class="student-meta mb-2">
+                        {{ item.student.major }} • GPA: {{ item.student.gpa }} • Class of {{ item.student.graduation_year }}
+                    </div>
+                    {% if item.student.skills %}
+                    <div class="student-meta mb-2">
+                        <i class="bi bi-code-slash"></i> {{ item.student.skills }}
+                    </div>
+                    {% endif %}
+                    <div>
+                        <span class="application-badge">
+                            <i class="bi bi-file-earmark-text-fill"></i> {{ item.application_count }} applications
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="header-card text-center">
+            <i class="bi bi-inbox" style="font-size: 3rem; color: #dee2e6;"></i>
+            <p class="text-muted mt-3">No students found</p>
+        </div>
+    {% endif %}
+ 
+    {% for message in get_flashed_messages(request) %}
+    <div class="alert alert-{{ message.type }} mt-3" role="alert">{{ message.message }}</div>
+    {% endfor %}
+</div>
+{% endblock %}
