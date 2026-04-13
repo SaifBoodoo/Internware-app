@@ -121,16 +121,18 @@
     <div class="header-card">
         <h3 class="fw-bold mb-3">My Applications</h3>
         <div>
-            <a href="{{ url_for('my_applications') }}?view='all" 
-               class="tab-btn {% if view == 'all' %}active{% endif %}">
+            <a href="{{ url_for('my_applications') }}?view=all"
+            class="tab-btn {% if view == 'all' %}active{% endif %}">
                 All
             </a>
-            <a href="{{ url_for('my_applications') }}?view='shortlisted" 
-               class="tab-btn {% if view == 'shortlisted' %}active{% endif %}">
+
+            <a href="{{ url_for('my_applications') }}?view=shortlisted"
+            class="tab-btn {% if view == 'shortlisted' %}active{% endif %}">
                 Shortlisted
             </a>
-            <a href="{{ url_for('my_applications') }}?view='pending'" 
-               class="tab-btn {% if view == 'pending' %}active{% endif %}">
+
+            <a href="{{ url_for('my_applications') }}?view=pending"
+            class="tab-btn {% if view == 'pending' %}active{% endif %}">
                 Pending
             </a>
         </div>

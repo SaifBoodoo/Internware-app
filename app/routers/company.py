@@ -189,6 +189,8 @@ async def view_applicants(
         
         if app.status == "shortlisted":
             shortlisted_with_students.append(data)
+
+        view = (view or "all").lower()
         
         # Apply filters for the "others" list
         if view == "all" and app.status != "shortlisted":

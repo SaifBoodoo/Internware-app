@@ -183,6 +183,8 @@ async def my_applications(
         
         # Get all applications for this student
         applications = app_repo.get_by_student(student_profile.id) or []
+
+        view = (view or "all").lower()
         
         # Apply filter
         if view == "shortlisted":
