@@ -7,12 +7,12 @@ if TYPE_CHECKING:
     from .application import Application
  
 class ProjectBase(SQLModel):
-    title: str = Field(index=True)
+    title: str
     description: str = ""
     requirements: str = ""
     stipend: float = 0.0
     duration: int = 12  # weeks
-    location: str = "" = Field(index=True)
+    location: str = ""
     start_date: Optional[str] = None
     posted_at: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc)
@@ -25,4 +25,3 @@ class Project(ProjectBase, table=True):
     # Relationships
     company: Optional["CompanyProfile"] = Relationship(back_populates="projects")
     applications: List["Application"] = Relationship(back_populates="project")
- 
