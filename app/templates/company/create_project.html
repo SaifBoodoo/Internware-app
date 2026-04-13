@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}Create Project - Internware{% endblock %}
+ 
+{% block internal_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        min-height: 100vh;
+    }
+ 
+    .create-container {
+        padding: 2rem;
+        min-height: 100vh;
+    }
+ 
+    .navbar-custom {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 1rem;
+        padding: 1rem 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+ 
+    .brand-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+ 
+    .form-card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+ 
+    .form-control, .form-select {
+        border-radius: 0.5rem;
+        border: 1px solid #dee2e6;
+        padding: 0.75rem;
+    }
+ 
+    .form-control:focus {
+        border-color: #11998e;
+        box-shadow: 0 0 0 0.2rem rgba(17, 153, 142, 0.25);
+    }
+ 
+    .btn-primary {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        border: none;
+        border-radius: 0.5rem;
+        padding: 0.75rem 2rem;
+    }
+ 
+    .btn-secondary {
+        border-radius: 0.5rem;
+        padding: 0.75rem 2rem;
+    }
+ 
+    .section-title {
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+</style>
+{% endblock %}
+ 
+{% block content %}
+<div class="create-container">
+    <!-- Navigation -->
+    <nav class="navbar-custom d-flex justify-content-between align-items-center">
+        <div class="brand-name">InternHub</div>
+        <div class="d-flex align-items-center gap-3">
+            <a href="{{ url_for('company_home_view') }}" class="btn btn-link text-decoration-none">Dashboard</a>
+            <a href="{{ url_for('my_projects') }}" class="btn btn-link text-decoration-none">My Projects</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm">Logout</a>
+        </div>
+    </nav>
+ 
+    <!-- Form Card -->
+    <div class="form-card">
+        <div class="mb-4">
+            <a href="{{ url_for('my_projects') }}" class="text-decoration-none text-muted">
+                <i class="bi bi-arrow-left"></i> Back to Projects
+            </a>
+        </div>
+ 
+        <h3 class="section-title">Post New Project</h3>
+ 
+        <form method="POST">
+            <div class="mb-3">
+                <label for="title" class="form-label fw-bold">Project Title *</label>
+                <input type="text" class="form-control" id="title" name="title" required placeholder="e.g. Software Development Intern">
+            </div>
+ 
+            <div class="mb-3">
+                <label for="description" class="form-label fw-bold">Description *</label>
+                <textarea class="form-control" id="description" name="description" rows="4" required placeholder="Describe the internship role, responsibilities, and what the intern will learn..."></textarea>
+            </div>
+ 
+            <div class="mb-3">
+                <label for="requirements" class="form-label fw-bold">Requirements *</label>
+                <textarea class="form-control" id="requirements" name="requirements" rows="3" required placeholder="List the required skills, qualifications, and prerequisites..."></textarea>
+            </div>
+ 
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="duration" class="form-label fw-bold">Duration (weeks) *</label>
+                    <input type="number" class="form-control" id="duration" name="duration" required placeholder="12">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="stipend" class="form-label fw-bold">Stipend ($/month) *</label>
+                    <input type="number" step="0.01" class="form-control" id="stipend" name="stipend" required placeholder="2000">
+                </div>
+            </div>
+ 
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="location" class="form-label fw-bold">Location *</label>
+                    <input type="text" class="form-control" id="location" name="location" required placeholder="Remote / San Francisco, CA">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="start_date" class="form-label fw-bold">Start Date</label>
+                    <input type="text" class="form-control" id="start_date" name="start_date" placeholder="June 2026 (flexible)">
+                </div>
+            </div>
+ 
+            <p class="text-muted small mb-4">* Required fields</p>
+ 
+            <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Post Project
+                </button>
+                <a href="{{ url_for('my_projects') }}" class="btn btn-secondary">
+                    Cancel
+                </a>
+            </div>
+        </form>
+ 
+        {% for message in get_flashed_messages(request) %}
+        <div class="alert alert-{{ message.type }} mt-3" role="alert">{{ message.message }}</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
